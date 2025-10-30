@@ -1,95 +1,19 @@
 'use client';
 
-// Mock Data for Experiences
-const MOCK_EXPERIENCES = [
-  {
-    id: 1,
-    title: "Kayaking",
-    tags: ["Udupi"],
-    location: "Udupi, Karnataka",
-    description: "Curated small-group experience. Certified guide. Safety first with gear included.",
-    price: 999,
-    imageUrl: "https://placehold.co/400x250/10B981/FFFFFF?text=Mangrove+Kayaking"
-  },
-  {
-    id: 2,
-    title: "Kayaking",
-    tags: ["Udupi", "Karnataka"],
-    location: "Udupi, Karnataka",
-    description: "Curated small-group experience. Certified guide. Safety first with gear included.",
-    price: 999,
-    imageUrl: "https://placehold.co/400x250/FBBF24/333333?text=Kayaking+Adventure"
-  },
-  {
-    id: 3,
-    title: "Kayaking",
-    tags: ["Udupi", "Karnataka"],
-    location: "Udupi, Karnataka",
-    description: "Curated small-group experience. Certified guide. Safety first with gear included.",
-    price: 999,
-    imageUrl: "https://placehold.co/400x250/EF4444/FFFFFF?text=River+Expedition"
-  },
-  {
-    id: 4,
-    title: "Trekking",
-    tags: ["Coorg"],
-    location: "Coorg, Karnataka",
-    description: "A challenging trek through dense forests with panoramic views.",
-    price: 1499,
-    imageUrl: "https://placehold.co/400x250/3B82F6/FFFFFF?text=Coorg+Trek"
-  }, {
-    id: 5,
-    title: "Kayaking",
-    tags: ["Udupi"],
-    location: "Udupi, Karnataka",
-    description: "Curated small-group experience. Certified guide. Safety first with gear included.",
-    price: 999,
-    imageUrl: "https://placehold.co/400x250/10B981/FFFFFF?text=Mangrove+Kayaking"
-  },
-  {
-    id: 6,
-    title: "Kayaking",
-    tags: ["Udupi", "Karnataka"],
-    location: "Udupi, Karnataka",
-    description: "Curated small-group experience. Certified guide. Safety first with gear included.",
-    price: 999,
-    imageUrl: "https://placehold.co/400x250/FBBF24/333333?text=Kayaking+Adventure"
-  },
-  {
-    id: 7,
-    title: "Kayaking",
-    tags: ["Udupi", "Karnataka"],
-    location: "Udupi, Karnataka",
-    description: "Curated small-group experience. Certified guide. Safety first with gear included.",
-    price: 999,
-    imageUrl: "https://placehold.co/400x250/EF4444/FFFFFF?text=River+Expedition"
-  },
-  {
-    id: 8,
-    title: "Trekking",
-    tags: ["Coorg"],
-    location: "Coorg, Karnataka",
-    description: "A challenging trek through dense forests with panoramic views.",
-    price: 1499,
-    imageUrl: "https://placehold.co/400x250/3B82F6/FFFFFF?text=Coorg+Trek"
-  }
-];
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { experiencesApi, Experience } from '@/lib/api';
 
-interface Experience {
-  id: number;
-  title: string;
-  tags: string[];
-  location: string;
-  description: string;
-  price: number;
-  imageUrl: string;
+interface ExperienceProps {
+  experience: Experience;
+  onClick: (id: string) => void;
 }
 
 /**
  * Renders a single Experience Card.
  */
-const ExperienceCard = ({ experience }: { experience: Experience }) => {
-  const { title, tags, description, price, imageUrl } = experience;
+const ExperienceCard = ({ experience, onClick }: ExperienceProps) => {
+  const { _id, title, tags, description, price, imageUrl } = experience;
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col">
@@ -130,7 +54,7 @@ const ExperienceCard = ({ experience }: { experience: Experience }) => {
           </p>
           <button
             className="px-4 py-2 bg-yellow-400 text-gray-900 font-semibold rounded-lg shadow-md hover:bg-yellow-500 transition duration-150 text-sm"
-            onClick={() => console.log(`Viewing details for ${title} (${experience.id})`)}
+            onClick={() => onClick(_id)}
           >
             View Details
           </button>
@@ -144,14 +68,84 @@ const ExperienceCard = ({ experience }: { experience: Experience }) => {
  * Main page component.
  */
 export default function Home() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [experiences, setExperiences] = useState<Experience[]>([]);
+  const [filteredExperiences, setFilteredExperiences] = useState<Experience[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchExperiences = async () => {
+      try {
+        const data = await experiencesApi.getAll();
+        setExperiences(data);
+        setFilteredExperiences(data);
+      } catch (err) {
+        setError('Failed to load experiences');
+        console.error('Error fetching experiences:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExperiences();
+  }, []);
+
+  useEffect(() => {
+    const searchQuery = searchParams.get('search')?.toLowerCase() || '';
+    if (searchQuery) {
+      const filtered = experiences.filter(
+        exp =>
+          exp.title.toLowerCase().includes(searchQuery) ||
+          exp.location.toLowerCase().includes(searchQuery) ||
+          exp.tags.some(tag => tag.toLowerCase().includes(searchQuery)) ||
+          exp.description.toLowerCase().includes(searchQuery)
+      );
+      setFilteredExperiences(filtered);
+    } else {
+      setFilteredExperiences(experiences);
+    }
+  }, [searchParams, experiences]);
+
+  const handleCardClick = (id: string) => {
+    router.push(`/experience/${id}`);
+  };
+
+  if (loading) {
+    return (
+      <main className="container mx-auto px-4 py-8">
+        <div className="flex justify-center items-center h-64">
+          <div className="text-gray-600 text-lg">Loading experiences...</div>
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="container mx-auto px-4 py-8">
+        <div className="flex justify-center items-center h-64">
+          <div className="text-red-600 text-lg">{error}</div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="container mx-auto px-4 py-8">
       {/* Experience Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {MOCK_EXPERIENCES.map(exp => (
-          <ExperienceCard key={exp.id} experience={exp} />
-        ))}
-      </div>
+      {filteredExperiences.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredExperiences.map(exp => (
+            <ExperienceCard key={exp._id} experience={exp} onClick={handleCardClick} />
+          ))}
+        </div>
+      ) : searchParams.get('search') ? (
+        <div className="text-center py-12">
+          <p className="text-gray-600 text-lg">No experiences found matching "{searchParams.get('search')}"</p>
+        </div>
+      ) : null}
     </main>
   );
 }
