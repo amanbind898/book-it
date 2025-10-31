@@ -163,10 +163,3 @@ export const promoApi = {
   },
 };
 
-// **Admin API**
-export const adminApi = {
-  getBookings: async (): Promise<Booking[]> => {
-    const response = await api.get('/bookings');
-    return response.data;
-  },
-};
