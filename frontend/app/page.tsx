@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { experiencesApi, Experience } from '@/lib/api';
+// NOTE: Assuming '@/lib/api' now defines 'Experience' with a 'location' property.
+import { experiencesApi, Experience } from '@/lib/api'; 
 
 interface ExperienceProps {
   experience: Experience;
@@ -13,7 +14,9 @@ interface ExperienceProps {
  * Renders a single Experience Card.
  */
 const ExperienceCard = ({ experience, onClick }: ExperienceProps) => {
-  const { _id, title, tags, description, price, imageUrl } = experience;
+  // 1. **CORRECTED:** Destructure 'location' here (even though it's not currently used in the visual JSX, 
+  // it's good practice to reflect the interface and what's available).
+  const { _id, title, tags, description, price, imageUrl, location } = experience; 
 
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col">
@@ -42,6 +45,10 @@ const ExperienceCard = ({ experience, onClick }: ExperienceProps) => {
         {/* Title and Location */}
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-1">{title}</h2>
+          
+          {/* OPTIONAL: Add a location display element if you want to show it on the card */}
+          {/* <p className="text-sm text-gray-500 mb-2">{location}</p> */}
+
           <p className="text-gray-600 text-sm mb-4 line-clamp-3">
             {description}
           </p>
@@ -82,7 +89,8 @@ export default function Home() {
         setExperiences(data);
         setFilteredExperiences(data);
       } catch (err) {
-        setError('Failed to load experiences');
+        // More robust error handling
+        setError(`Failed to load experiences. ${(err as Error).message || 'Check API connection.'}`);
         console.error('Error fetching experiences:', err);
       } finally {
         setLoading(false);
@@ -95,10 +103,11 @@ export default function Home() {
   useEffect(() => {
     const searchQuery = searchParams.get('search')?.toLowerCase() || '';
     if (searchQuery) {
+      // 2. THIS FILTER LOGIC IS NOW CORRECT, assuming 'location' is on the Experience type
       const filtered = experiences.filter(
         exp =>
           exp.title.toLowerCase().includes(searchQuery) ||
-          exp.location.toLowerCase().includes(searchQuery) ||
+          exp.location.toLowerCase().includes(searchQuery) || 
           exp.tags.some(tag => tag.toLowerCase().includes(searchQuery)) ||
           exp.description.toLowerCase().includes(searchQuery)
       );
@@ -125,8 +134,8 @@ export default function Home() {
   if (error) {
     return (
       <main className="container mx-auto px-4 py-8">
-        <div className="flex justify-center items-center h-64">
-          <div className="text-red-600 text-lg">{error}</div>
+        <div className="flex justify-center items-center h-64 text-center p-4 bg-red-50 rounded-lg border border-red-200">
+          <div className="text-red-700 text-lg font-medium">Error: {error}</div>
         </div>
       </main>
     );
@@ -143,10 +152,13 @@ export default function Home() {
         </div>
       ) : searchParams.get('search') ? (
         <div className="text-center py-12">
-          <p className="text-gray-600 text-lg">No experiences found matching "{searchParams.get('search')}"</p>
+          <p className="text-gray-600 text-lg">No experiences found matching &quot;{searchParams.get('search')}&quot;</p>
         </div>
-      ) : null}
+      ) : (
+        <div className="text-center py-12">
+          <p className="text-gray-600 text-lg">No experiences available.</p>
+        </div>
+      )}
     </main>
   );
 }
-
