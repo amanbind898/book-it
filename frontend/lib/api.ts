@@ -129,6 +129,17 @@ export const experiencesApi = {
     const response = await api.get(`/experiences/${id}`);
     return response.data;
   },
+  create: async (experience: Omit<Experience, '_id'>): Promise<Experience> => {
+    const response = await api.post('/experiences', experience);
+    return response.data;
+  },
+  update: async (id: string, experience: Partial<Experience>): Promise<Experience> => {
+    const response = await api.put(`/experiences/${id}`, experience);
+    return response.data;
+  },
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/experiences/${id}`);
+  },
 };
 
 // **Bookings API**

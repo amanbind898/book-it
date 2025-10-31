@@ -4,7 +4,7 @@ const slotSchema = new mongoose.Schema({
   date: { type: String, required: true },
   time: { type: String, required: true },
   available: { type: Boolean, default: true },
-  maxParticipants: { type: Number, default: 1 }
+  tickets: { type: Number, default: 5 }
 });
 
 const experienceSchema = new mongoose.Schema({

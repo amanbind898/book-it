@@ -25,22 +25,13 @@ export const Logo = () => {
 
       {/* 2. Yellow Inner Circle (Background for Text) */}
       <circle
-        cx="16"
-        cy="10.5"
-        r="7.5"
+        cx="15.5"
+        cy="12.5"
+        r="9.5"
         fill="#FFDA44" /* Bright Yellow color */
       />
 
-      {/* 3. Black Vertical Divider Line */}
-      <line
-        x1="16"
-        y1="5"
-        x2="16"
-        y2="16"
-        stroke="#000000"
-        strokeWidth="1.5"
-      />
-
+      
       {/* 4. Text 'b' and 'i' (Black, bold) */}
       <text
         x="14" /* Adjusted for visual centering of 'b' */
@@ -52,7 +43,7 @@ export const Logo = () => {
         fontWeight="900" /* Extra bold */
         fontFamily="system-ui, -apple-system, sans-serif"
       >
-        b
+         b
       </text>
       <text
         x="17" /* Adjusted for visual centering of 'i' */
@@ -67,13 +58,7 @@ export const Logo = () => {
         i
       </text>
       
-      {/* 5. Smile Arc (Black) - Quadratic Bezier Curve */}
-      <path
-        d="M11 14 Q 16 16.5 21 14"
-        stroke="#000000"
-        strokeWidth="1.5"
-        fill="none"
-      />
+     
     </svg>
   );
 };
