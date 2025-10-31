@@ -6,14 +6,18 @@ require('dotenv').config();
 const app = express();
 
 // Middleware
-const allowedOrigins = [
- 'https://book-it-lake-omega.vercel.app/',
-  'http://localhost:3000'
-];
+// Allow configuring origins via CORS_ORIGIN (comma-separated). We normalize origins to avoid
+// mismatches from trailing slashes.
+const rawOrigins = process.env.CORS_ORIGIN || 'https://book-it-lake-omega.vercel.app,http://localhost:3000';
+const allowedOrigins = rawOrigins.split(',').map(o => o.trim().replace(/\/$/, ''));
 
 app.use(cors({
   origin: function(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Allow non-browser tools (curl, server-side requests) that have no origin
+    if (!origin) return callback(null, true);
+
+    const normalizedOrigin = origin.replace(/\/$/, '');
+    if (allowedOrigins.includes(normalizedOrigin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -21,6 +25,7 @@ app.use(cors({
   },
   credentials: true
 }));
+
 app.use(express.json());
 
 // Request logging middleware
