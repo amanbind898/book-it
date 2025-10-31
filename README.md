@@ -99,7 +99,6 @@ book-it/
 │   │   ├── experiences.js     # Experience API endpoints
 │   │   ├── bookings.js        # Booking API endpoints
 │   │   └── promo.js           # Promo code validation endpoint
-│   ├── seed.js                # Database seeding script
 │   └── server.js              # Express server entry point
 ├── frontend/
 │   ├── app/
@@ -115,8 +114,10 @@ book-it/
 │   │   └── globals.css        # Global styles
 │   ├── components/
 │   │   ├── Header.tsx         # Navigation header
-│   │   ├── Footer.tsx         # Footer component
-│   │   └── Logo.tsx           # Logo component
+│   │   ├── HomeContent.tsx    # Home page client component
+│   │   ├── ResultContent.tsx  # Result page client component
+│   │   ├── Logo.tsx          # Logo component
+│   │   └── BackButton.tsx     # Back navigation component
 │   └── lib/
 │       └── api.ts             # API configuration and methods
 └── README.md
@@ -179,6 +180,8 @@ The database is seeded with the following promo codes:
 ✅ Database persistence with MongoDB  
 ✅ Loading and error states  
 ✅ Beautiful UI with TailwindCSS  
+✅ Optimized image loading with Next.js Image component  
+✅ Server-side rendering with proper client component isolation  
 
 ## 📝 Notes
 
@@ -189,7 +192,13 @@ The database is seeded with the following promo codes:
 
 ## 🤝 Contributing
 
-This is a fullstack intern assignment project. Feel free to explore and learn from the code!
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+1. Fork the repository at https://github.com/amanbind898/book-it
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📄 License
 
