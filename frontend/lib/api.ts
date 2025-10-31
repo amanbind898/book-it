@@ -67,7 +67,6 @@ export interface BookingRequest {
   experienceId: string;
   userName: string;
   userEmail: string;
-  userPhone: string;
   selectedDate: string;
   selectedTime: string;
   numberOfGuests: number;

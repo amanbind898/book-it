@@ -1,6 +1,7 @@
 'use client';
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Suspense } from 'react';
 import { Header } from "@/components";
 
 const geistSans = Geist({
@@ -23,7 +24,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gray-50 font-sans`}
       >
-        <Header />
+        <Suspense fallback={<div />}> 
+          <Header />
+        </Suspense>
         {children}
      
       </body>

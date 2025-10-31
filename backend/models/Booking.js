@@ -5,7 +5,6 @@ const bookingSchema = new mongoose.Schema({
   experienceTitle: { type: String, required: true },
   userName: { type: String, required: true },
   userEmail: { type: String, required: true },
-  userPhone: { type: String, required: true },
   selectedDate: { type: String, required: true },
   selectedTime: { type: String, required: true },
   numberOfGuests: { type: Number, required: true },

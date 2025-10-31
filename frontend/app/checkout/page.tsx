@@ -37,8 +37,7 @@ export default function CheckoutPage() {
   const experienceId = searchParams.get('experienceId');
   const selectedDate = searchParams.get('date');
   const selectedTime = searchParams.get('time');
-  
-  // **FIX:** Get quantity from URL params, default to 1
+
   const quantity = parseInt(searchParams.get('quantity') || '1', 10);
 
   const [formData, setFormData] = useState({
@@ -154,10 +153,9 @@ export default function CheckoutPage() {
         experienceId,
         userName: formData.userName,
         userEmail: formData.userEmail,
-        userPhone: '0000000000', // **NOTE:** Phone was removed from form. Send a dummy or make optional in API.
         selectedDate,
         selectedTime,
-        numberOfGuests: quantity, // Use quantity from URL params
+        numberOfGuests: quantity, 
         promoCode: appliedPromo?.valid ? appliedPromo.promo.code : undefined,
       };
 
@@ -166,7 +164,7 @@ export default function CheckoutPage() {
       // Navigate to result page with booking info
       // Assuming response has booking._id or similar
       router.push(`/result?success=true&bookingId=${response.booking._id}`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       const errorMessage = getApiErrorMessage(err);
       router.push(`/result?success=false&message=${encodeURIComponent(errorMessage)}`);
     } finally {

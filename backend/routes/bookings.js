@@ -89,7 +89,6 @@ router.post('/', async (req, res) => {
       experienceTitle: experience.title,
       userName,
       userEmail,
-      userPhone,
       selectedDate,
       selectedTime,
       numberOfGuests,
